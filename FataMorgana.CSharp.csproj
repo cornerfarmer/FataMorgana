@@ -77,6 +77,8 @@
   <ItemGroup>
     <Compile Include="Assets\AnimationController.cs" />
     <Compile Include="Assets\Controller.cs" />
+    <Compile Include="Assets\Game.cs" />
+    <Compile Include="Assets\HUDController.cs" />
     <Compile Include="Assets\LowPolyTerrainGenerator.cs" />
     <Compile Include="Assets\ProceduralToolkit\MeshDraft.cs" />
     <Compile Include="Assets\ProceduralToolkit\Vector2Int.cs" />

@@ -14,8 +14,10 @@ public class TerrainController : MonoBehaviour
     public GameObject chunk;
     public static LowPolyTerrainGenerator.Config config;
     public int sight = 3;
+    public int desertSize = 30;
     private Dictionary<String, GameObject> chunks;
     public GameObject player;
+    public Material greenLand;
 
     // Use this for initialization
     void Start ()
@@ -65,6 +67,10 @@ public class TerrainController : MonoBehaviour
         newChunk.GetComponent<MeshFilter>().sharedMesh.RecalculateNormals();
 
         newChunk.GetComponent<MeshCollider>().sharedMesh = newChunk.GetComponent<MeshFilter>().sharedMesh;
+
+        if (x < -desertSize || x > desertSize || z < -desertSize || z > desertSize)
+            newChunk.GetComponent<Renderer>().material = greenLand;
+
         chunks[newChunk.name] = newChunk;
     }
 
@@ -72,6 +78,12 @@ public class TerrainController : MonoBehaviour
     {
         Vector2Int center = new Vector2Int((int)(player.transform.position.x / config.terrainSize.x), (int)(player.transform.position.z / config.terrainSize.z));
         return chunks["Chunk" + center.x + "x" + center.y];
+    }
+
+    public bool ReachedGreenLand()
+    {
+        Vector2Int center = new Vector2Int((int)(player.transform.position.x / config.terrainSize.x), (int)(player.transform.position.z / config.terrainSize.z));
+        return (center.x < -desertSize || center.x > desertSize || center.y < -desertSize || center.y > desertSize);
     }
 
     // Update is called once per frame

@@ -35,25 +35,29 @@ public class AnimationController : MonoBehaviour
 	
 	// Update is called once per frame
 	void Update () {
-	    if (Input.GetAxis("Vertical") != 0)
+	    if (Input.GetAxis("Vertical") != 0 && Controller.isWalking)
 	    {
-            if (Input.GetKey(KeyCode.LeftShift))
-	            animation.Play("run");
+	        string mode = "";
+	        if (Input.GetKey(KeyCode.LeftShift))
+	            mode = "run";
             else
-                animation.Play("walk");
-	        if (lastTime > animation["walk"].normalizedTime)
+	            mode = "walk";
+
+            animation.Play(mode);
+	        if (lastTime > animation[mode].normalizedTime)
 	            lastTime--;
 
-	        if (lastTime < 0 && animation["walk"].normalizedTime >= 0)
+	        if (lastTime < 0 && animation[mode].normalizedTime >= 0)
 	            SpawnFootprint(false);
-            else if (lastTime < 0.5f && animation["walk"].normalizedTime >= 0.5f)
+            else if (lastTime < 0.5f && animation[mode].normalizedTime >= 0.5f)
                 SpawnFootprint(true);
 
-            lastTime = animation["walk"].normalizedTime;
+            lastTime = animation[mode].normalizedTime;
 	    }
 	    else
 	    {
 	        animation.Play("idle");
+	        lastTime = 0.9f;
         }
 	}
 }
