@@ -75,6 +75,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\MusicController.cs" />
     <Compile Include="Assets\OasisController.cs" />
     <Compile Include="Assets\ProceduralToolkit\MeshDraft.cs" />
     <Compile Include="Assets\ProceduralToolkit\Vector2Int.cs" />
