@@ -86,6 +86,7 @@
     <Compile Include="Assets\Scripts\TerrainController.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Footstep\TransparentWithShadows.shader" />
     <None Include="Assets\Palm Trees\Shaders\WavingDoublePassCullBackface.shader" />
     <None Include="Assets\Palm Trees\Shaders\WavingDoublePassNoCullBackface.shader" />
     <None Include="Assets\Wispy Sky\ReadMe.txt" />

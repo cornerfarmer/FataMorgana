@@ -18,7 +18,9 @@ public class TerrainController : MonoBehaviour
     private Dictionary<String, GameObject> chunks;
     public GameObject player;
     public Material greenLand;
+    public Material desertLand;
     public GameObject oasis;
+    private List<GameObject> notUsedChunks;
 
     // Use this for initialization
     void Start ()
@@ -28,7 +30,7 @@ public class TerrainController : MonoBehaviour
 	    config.heightScale = 8;
 	    config.noiseScale = 1f;
         chunks = new Dictionary<string, GameObject>();
-
+	    notUsedChunks = new List<GameObject>();;
     }
 
     void UpdateTerrain()
@@ -44,7 +46,7 @@ public class TerrainController : MonoBehaviour
             int y = Convert.ToInt32(keyValuePair.Key.Substring(keyValuePair.Key.IndexOf("x") + 1));
             if (!(x >= xmin && x <= xmax && y >= ymin && y <= ymax))
             {
-                Destroy(keyValuePair.Value);
+                notUsedChunks.Add(keyValuePair.Value);
                 chunks.Remove(keyValuePair.Key);
             }
         }
@@ -53,31 +55,58 @@ public class TerrainController : MonoBehaviour
             for (int z = ymin; z <= ymax; z++)
             {
                 if (!chunks.ContainsKey("Chunk" + x + "x" + z))
-                    CreateChunk(x, z);
+                {
+                    if (notUsedChunks.Count > 0)
+                    {
+                        CreateChunk(x, z, notUsedChunks[0]);
+                        notUsedChunks.RemoveAt(0);
+                    }
+                    else
+                    {
+                        CreateChunk(x, z, null);
+                    }
+                }
             }
         }
     }
 
-    void CreateChunk(int x, int z)
+    void CreateChunk(int x, int z, GameObject newChunk)
     {
-        GameObject newChunk = Instantiate(chunk, new Vector3(x * config.terrainSize.x, 0, z * config.terrainSize.z), new Quaternion(0, 0, 0, 1));
+        if (newChunk == null)
+            newChunk = Instantiate(chunk, new Vector3(x * config.terrainSize.x, 0, z * config.terrainSize.z), new Quaternion(0, 0, 0, 1));
+        else
+            newChunk.transform.position = new Vector3(x * config.terrainSize.x, 0, z * config.terrainSize.z);
+        
         newChunk.name = "Chunk" + x + "x" + z;
         config.terrainOffset = new Vector2(x, z);
         config.containsSpecialItem = (x == 0 && z == 0);
 
-
-        newChunk.GetComponent<MeshFilter>().sharedMesh = LowPolyTerrainGenerator.TerrainDraft(config).ToMesh();
-        newChunk.GetComponent<MeshFilter>().sharedMesh.RecalculateNormals();
+        if (newChunk.GetComponent<MeshFilter>().sharedMesh == null)
+            newChunk.GetComponent<MeshFilter>().sharedMesh = LowPolyTerrainGenerator.TerrainDraft(config).ToMesh();
+        else
+        {
+            Mesh existingMesh = newChunk.GetComponent<MeshFilter>().sharedMesh;
+            LowPolyTerrainGenerator.TerrainDraft(config).ToMesh(ref existingMesh);
+        }
 
         newChunk.GetComponent<MeshCollider>().sharedMesh = newChunk.GetComponent<MeshFilter>().sharedMesh;
 
         if (x < -desertSize || x > desertSize || z < -desertSize || z > desertSize)
             newChunk.GetComponent<Renderer>().material = greenLand;
+        else
+            newChunk.GetComponent<Renderer>().material = desertLand;
 
         chunks[newChunk.name] = newChunk;
 
         if (config.containsSpecialItem)
             AddSpecialItem(newChunk);
+        else
+        {
+            for (var i = newChunk.transform.childCount - 1; i >= 0; i--)
+            {
+                Destroy(newChunk.transform.GetChild(i).gameObject);
+            }
+        }
     }
 
     private void AddSpecialItem(GameObject newChunk)

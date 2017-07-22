@@ -33,6 +33,8 @@ namespace ProceduralToolkit.Examples
             }
         }
 
+        private static MeshDraft draft;
+
         public static MeshDraft TerrainDraft(Config config)
         {
             Assert.IsTrue(config.terrainSize.x > 0);
@@ -43,32 +45,37 @@ namespace ProceduralToolkit.Examples
             int zSegments = config.GetZSegments();
             Vector2 noiseOffset = new Vector2(config.terrainOffset.x * xSegments, config.terrainOffset.y * zSegments);
 
-            float xStep = config.terrainSize.x/xSegments;
-            float zStep = config.terrainSize.z/zSegments;
-            int vertexCount = 6*xSegments*zSegments;
-            var draft = new MeshDraft
-            {
-                name = "Terrain",
-                vertices = new List<Vector3>(vertexCount),
-                triangles = new List<int>(vertexCount),
-                normals = new List<Vector3>(vertexCount),
-                colors = new List<Color>(vertexCount)
-            };
+            float xStep = config.terrainSize.x / xSegments;
+            float zStep = config.terrainSize.z / zSegments;
+            int vertexCount = 6 * xSegments * zSegments;
 
-            for (int i = 0; i < vertexCount; i++)
+            if (draft == null)
             {
-                draft.vertices.Add(Vector3.zero);
-                draft.triangles.Add(0);
-                draft.normals.Add(Vector3.zero);
-                draft.colors.Add(Color.black);
-                draft.uv.Add(Vector2.zero);
+                draft = new MeshDraft
+                {
+                    name = "Terrain",
+                    vertices = new List<Vector3>(vertexCount),
+                    triangles = new List<int>(vertexCount),
+                    normals = new List<Vector3>(vertexCount),
+                    colors = new List<Color>(vertexCount)
+                };
+
+
+                for (int i = 0; i < vertexCount; i++)
+                {
+                    draft.vertices.Add(Vector3.zero);
+                    draft.triangles.Add(0);
+                    draft.normals.Add(Vector3.zero);
+                    draft.colors.Add(Color.black);
+                    draft.uv.Add(Vector2.zero);
+                }
             }
 
             for (int x = 0; x < xSegments; x++)
             {
                 for (int z = 0; z < zSegments; z++)
                 {
-                    int index0 = 6*(x + z*xSegments);
+                    int index0 = 6 * (x + z * xSegments);
                     int index1 = index0 + 1;
                     int index2 = index0 + 2;
                     int index3 = index0 + 3;
@@ -80,10 +87,10 @@ namespace ProceduralToolkit.Examples
                     float height10 = GetHeight(x + 1, z + 0, xSegments, zSegments, config, noiseOffset);
                     float height11 = GetHeight(x + 1, z + 1, xSegments, zSegments, config, noiseOffset);
 
-                    var vertex00 = new Vector3((x + 0)*xStep, height00*config.terrainSize.y, (z + 0)*zStep);
-                    var vertex01 = new Vector3((x + 0)*xStep, height01*config.terrainSize.y, (z + 1)*zStep);
-                    var vertex10 = new Vector3((x + 1)*xStep, height10*config.terrainSize.y, (z + 0)*zStep);
-                    var vertex11 = new Vector3((x + 1)*xStep, height11*config.terrainSize.y, (z + 1)*zStep);
+                    var vertex00 = new Vector3((x + 0) * xStep, height00 * config.terrainSize.y, (z + 0) * zStep);
+                    var vertex01 = new Vector3((x + 0) * xStep, height01 * config.terrainSize.y, (z + 1) * zStep);
+                    var vertex10 = new Vector3((x + 1) * xStep, height10 * config.terrainSize.y, (z + 0) * zStep);
+                    var vertex11 = new Vector3((x + 1) * xStep, height11 * config.terrainSize.y, (z + 1) * zStep);
 
                     draft.vertices[index0] = vertex00;
                     draft.vertices[index1] = vertex01;

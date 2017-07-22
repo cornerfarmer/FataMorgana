@@ -21,43 +21,49 @@ public class Controller : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-	    transform.Rotate(transform.up, Input.GetAxis("Horizontal") * RotateSpeed * Time.deltaTime);
-
-	    if (Input.GetAxis("Vertical") != 0 && (Game.stamina > 10 && isWalking || Game.stamina > 11))
+	    if (Game.isRunning)
 	    {
-	        Vector3 dir = transform.forward;
+	        transform.Rotate(transform.up, Input.GetAxis("Horizontal") * RotateSpeed * Time.deltaTime);
 
-	        int layer_mask = LayerMask.GetMask("Terrain");
-	        RaycastHit hit;
-	        Physics.Raycast(new Ray(transform.position + transform.up, transform.up * -1), out hit, 10, layer_mask);
-	        dir.x += hit.normal.x * 0.5f;
-	        dir.z += hit.normal.z * 0.5f;
+	        if (Input.GetAxis("Vertical") != 0 && (Game.stamina > 10 && isWalking || Game.stamina > 11))
+	        {
+	            Vector3 dir = transform.forward;
 
-	        float angle = Vector3.Angle(transform.forward, dir);
-	        Vector3 cross = Vector3.Cross(transform.forward, dir);
-	        if (cross.y < 0) angle = -angle;
-            
-	        transform.Rotate(transform.up, angle * 0.02f);
+	            int layer_mask = LayerMask.GetMask("Terrain");
+	            RaycastHit hit;
+	            Physics.Raycast(new Ray(transform.position + transform.up, transform.up * -1), out hit, 10, layer_mask);
+	            dir.x += hit.normal.x * 0.5f;
+	            dir.z += hit.normal.z * 0.5f;
 
-	        transform.position += Input.GetAxis("Vertical") * transform.forward * (Input.GetKey(KeyCode.LeftShift) ? RunSpeed : WalkSpeed) * Time.deltaTime;
+	            float angle = Vector3.Angle(transform.forward, dir);
+	            Vector3 cross = Vector3.Cross(transform.forward, dir);
+	            if (cross.y < 0) angle = -angle;
 
-            if (Input.GetKey(KeyCode.LeftShift))
-	            Game.DecreaseStaminaForRun();
-            else
-                Game.DecreaseStaminaForWalk();
-	        isWalking = true;
-	    }
-	    else
-	    {
-	        isWalking = false;
-	    }
+	            transform.Rotate(transform.up, angle * 0.02f);
 
-	    float height = LowPolyTerrainGenerator.GetHeightAtWorldPos(transform.position.x, transform.position.z, TerrainController.config);
-        transform.position = new Vector3(transform.position.x, height, transform.position.z);
+	            transform.position += Input.GetAxis("Vertical") * transform.forward *
+	                                  (Input.GetKey(KeyCode.LeftShift) ? RunSpeed : WalkSpeed) * Time.deltaTime;
 
-	    if (Input.GetKeyUp(KeyCode.F) && isAbleToDrink)
-	    {
-	        Game.thirst = 100;
+	            if (Input.GetKey(KeyCode.LeftShift))
+	                Game.DecreaseStaminaForRun();
+	            else
+	                Game.DecreaseStaminaForWalk();
+	            isWalking = true;
+	        }
+	        else
+	        {
+	            isWalking = false;
+	        }
+
+	        float height =
+	            LowPolyTerrainGenerator.GetHeightAtWorldPos(transform.position.x, transform.position.z,
+	                TerrainController.config);
+	        transform.position = new Vector3(transform.position.x, height, transform.position.z);
+
+	        if (Input.GetKeyUp(KeyCode.F) && isAbleToDrink)
+	        {
+	            Game.thirst = 100;
+	        }
 	    }
 	}
 }

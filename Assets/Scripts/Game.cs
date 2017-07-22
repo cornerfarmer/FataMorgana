@@ -22,22 +22,26 @@ public class Game : MonoBehaviour
         thirst = 100;
         health = 100;
         stamina = 100;
+        isRunning = true;
     }
 	
 	// Update is called once per frame
 	void Update () {
-	    stamina = Mathf.Min(100, stamina + 1 * Time.deltaTime);
+	    if (Game.isRunning)
+	    {
+	        stamina = Mathf.Min(100, stamina + 1 * Time.deltaTime);
 
-        if (thirst < 20)
-            health = Mathf.Max(0, health - healthDecreaseSpeed * Time.deltaTime);
+	        if (thirst < 20)
+	            health = Mathf.Max(0, health - healthDecreaseSpeed * Time.deltaTime);
 
-	    thirst = Mathf.Max(0, thirst - thirstDecreaseSpeed * Time.deltaTime);
+	        thirst = Mathf.Max(0, thirst - thirstDecreaseSpeed * Time.deltaTime);
 
-	    if (health <= 0)
-	        Die();
+	        if (health <= 0)
+	            Die();
 
-	    if (GetComponent<TerrainController>().ReachedGreenLand())
-	        Win();
+	        if (GetComponent<TerrainController>().ReachedGreenLand())
+	            Win();
+	    }
 	}
 
     void Die()
