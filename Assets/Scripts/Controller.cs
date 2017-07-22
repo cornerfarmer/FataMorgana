@@ -25,7 +25,7 @@ public class Controller : MonoBehaviour
 	    {
 	        transform.Rotate(transform.up, Input.GetAxis("Horizontal") * RotateSpeed * Time.deltaTime);
 
-	        if (Input.GetAxis("Vertical") != 0 && (Game.stamina > 10 && isWalking || Game.stamina > 11))
+	        if (Input.GetAxis("Vertical") != 0)
 	        {
 	            Vector3 dir = transform.forward;
 
@@ -44,10 +44,6 @@ public class Controller : MonoBehaviour
 	            transform.position += Input.GetAxis("Vertical") * transform.forward *
 	                                  (Input.GetKey(KeyCode.LeftShift) ? RunSpeed : WalkSpeed) * Time.deltaTime;
 
-	            if (Input.GetKey(KeyCode.LeftShift))
-	                Game.DecreaseStaminaForRun();
-	            else
-	                Game.DecreaseStaminaForWalk();
 	            isWalking = true;
 	        }
 	        else

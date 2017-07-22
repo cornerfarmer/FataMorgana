@@ -14,20 +14,22 @@ public class TerrainController : MonoBehaviour
     public GameObject chunk;
     public static LowPolyTerrainGenerator.Config config;
     public int sight = 5;
-    public int desertSize = 30;
+    public int desertSize = 50;
     private Dictionary<String, GameObject> chunks;
     public GameObject player;
     public Material greenLand;
     public Material desertLand;
     public GameObject oasis;
     private List<GameObject> notUsedChunks;
+    static Vector2 specialNoiseInitial;
 
     // Use this for initialization
     void Start ()
 	{
 	    config = new LowPolyTerrainGenerator.Config();
 	    config.noiseInitial = new Vector2(Random.Range(0f, 100f), Random.Range(0f, 100f));
-	    config.heightScale = 8;
+	    specialNoiseInitial = new Vector2(Random.Range(0f, 100f), Random.Range(0f, 100f));
+        config.heightScale = 8;
 	    config.noiseScale = 1f;
         chunks = new Dictionary<string, GameObject>();
 	    notUsedChunks = new List<GameObject>();;
@@ -79,7 +81,7 @@ public class TerrainController : MonoBehaviour
         
         newChunk.name = "Chunk" + x + "x" + z;
         config.terrainOffset = new Vector2(x, z);
-        config.containsSpecialItem = (x == 0 && z == 0);
+        config.containsSpecialItem = isFieldSpecial(x, z);
 
         if (newChunk.GetComponent<MeshFilter>().sharedMesh == null)
             newChunk.GetComponent<MeshFilter>().sharedMesh = LowPolyTerrainGenerator.TerrainDraft(config).ToMesh();
@@ -109,9 +111,14 @@ public class TerrainController : MonoBehaviour
         }
     }
 
+    public static bool isFieldSpecial(int x, int z)
+    {
+        return Mathf.PerlinNoise(x / 3.0f + specialNoiseInitial.x, z / 3.0f + 100 + specialNoiseInitial.y) > 0.88;
+    }
+
     private void AddSpecialItem(GameObject newChunk)
     {
-        Instantiate(oasis, newChunk.transform);
+        Instantiate(oasis, newChunk.transform).transform.localPosition = new Vector3(5, 0, 5);
     }
 
     public GameObject GetCurrentChunk()

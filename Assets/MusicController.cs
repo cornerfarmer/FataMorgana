@@ -27,19 +27,20 @@ public class MusicController : MonoBehaviour
 
 	    if (!audioSource.isPlaying)
 	    {
-	        if (timeSinceLastSound > 30)
+	        if (timeSinceLastSound > 1)
 	        {
-	            int rand = Random.Range(0, 4);
+	            audioSource.Stop();
+                int rand = Random.Range(0, 4);
 	            if (rand == 0)
-	            {
-	                audioSource.clip = wind;
-	                audioSource.Play();
-	            }
-                else if (rand == 1)
 	            {
 	                audioSource.clip = background1;
 	                audioSource.Play();
-	            }
+                }
+                else if (rand == 1)
+	            {
+	                audioSource.clip = wind;
+	                audioSource.Play();
+                }
 	            else if (rand == 2)
 	            {
 	                audioSource.clip = background2;

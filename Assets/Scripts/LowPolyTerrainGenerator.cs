@@ -183,7 +183,7 @@ namespace ProceduralToolkit.Examples
 
             Vector2 noiseOffset = new Vector2(offsetX * xSegments, offsetY * zSegments);
 
-            config.containsSpecialItem = (offsetX == 0 && offsetY == 0);
+            config.containsSpecialItem = TerrainController.isFieldSpecial(offsetX, offsetY);
 
             return GetHeight(x*xSegments - noiseOffset.x, z *zSegments - noiseOffset.y, xSegments, zSegments, config, noiseOffset);
         }

@@ -13,7 +13,7 @@ public class HUDController : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-	    GetComponent<Text>().text = "Health: " + (int)Game.health + "\nThirst: " + (int)Game.thirst + "\nStamina: " + (int)Game.stamina;
+	    GetComponent<Text>().text = "Health: " + (int)Game.health + "\nThirst: " + (int)Game.thirst;
 	    
     }
 }
